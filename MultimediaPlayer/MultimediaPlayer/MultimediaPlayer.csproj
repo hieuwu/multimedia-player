@@ -94,5 +94,22 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\next-button.png" />
+    <Resource Include="Icon\play-button.png" />
+    <Resource Include="Icon\previous-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\pause-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\shuffle-disabled.png" />
+    <Resource Include="Icon\shuffle-enabled-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\loop-all.png" />
+    <Resource Include="Icon\loop-disabled.png" />
+    <Resource Include="Icon\loop-one.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

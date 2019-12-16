@@ -7,6 +7,105 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+
+        <Border Margin="10,10,9.6,10" BorderBrush="Black" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" RenderTransformOrigin="0.502,0.503">
+            <Border.Background>
+                <LinearGradientBrush EndPoint="0.504,1.5" StartPoint="0.504,0.03">
+                    <GradientStop Color="#434343" Offset="0"/>
+                    <GradientStop Color="#4B79A1" Offset="0.567"/>
+                </LinearGradientBrush>
+            </Border.Background>
+        </Border>
+
+
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+            <Button Content="Play" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="75"
+                    Foreground="White"
+                    Background="#38ef7d"
+                    >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Canvas Height="390" Width="400" HorizontalAlignment="Center" >
+                <Button Name="bntPrevious" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="123" Canvas.Top="321" Click="BtnPreClick">
+                    <Image Source="Icon/previous-button.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                <Button  Name="btnPlay" Width="50" Height="50" Background="Transparent" BorderThickness="2" BorderBrush="Black" 
+                     Canvas.Left="188" Canvas.Top="309" Click="BtnPlayClick" >
+                    <Image Source="Icon/play-button.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="50"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button  Name="btnPause" Width="50" Height="50" Background="Transparent" BorderThickness="2" BorderBrush="Black"
+                      Canvas.Left="188" Canvas.Top="309"  Click="BtnPauseClick" Visibility="Hidden">
+                    <Image Source="Icon/pause-button.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="50"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button  Name="btnNext" Width="30" Height="30"  Background="Transparent" BorderThickness="0" Canvas.Left="269" Canvas.Top="321"
+                     Click="BtnNextClick">
+                    <Image Source="Icon/next-button.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                <Button  Name="btnShuffleDisable" Width="30" Height="30"  Background="Transparent" BorderThickness="0"
+                         Canvas.Left="10" Canvas.Top="321"
+                     Click="BtnShuffleDisableClick" >
+                    <Image Source="Icon/shuffle-disabled.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                <Button  Name="btnShuffleEnable" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
+                         Canvas.Left="10" Canvas.Top="321"
+                     Click="BtnShuffleEnableClick" Visibility="Hidden">
+                    <Image Source="Icon/shuffle-enabled-button.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                <Button  Name="btnLoopDisable" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
+                         Canvas.Left="360" Canvas.Top="321"
+                     Click="BtnLoopDisableClick" >
+                    <Image Source="Icon/loop-disabled.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+
+                <Button  Name="btnLoopAll" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
+                         Canvas.Left="360" Canvas.Top="321" Visibility="Hidden"
+                     Click="BtnLoopAllClick" >
+                    <Image Source="Icon/loop-all.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                <Button  Name="btnLoopOne" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
+                         Canvas.Left="360" Canvas.Top="321"
+                          Visibility="Hidden"
+                     Click="BtnLoopOneClick" >
+                    <Image Source="Icon/loop-one.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                </Button>
+                
+
+            </Canvas>
+        </StackPanel>
     </Grid>
 </Window>
