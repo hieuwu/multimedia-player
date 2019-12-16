@@ -111,5 +111,8 @@
     <Resource Include="Icon\loop-disabled.png" />
     <Resource Include="Icon\loop-one.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\compact-disc.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
