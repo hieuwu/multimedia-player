@@ -23,7 +23,6 @@ namespace MultimediaPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Storyboard myStoryboard;
         private MediaPlayer mediaPlayer = new MediaPlayer();
         public MainWindow()
         {
@@ -41,19 +40,27 @@ namespace MultimediaPlayer
         static public List<string> _ListToPlay = _ListToPlay = new List<string>();
         private void BtnPlayClick(object sender, RoutedEventArgs e)
         {
-            TotalSongNumber.Text = _ListToPlay.Count.ToString();
-            SongNamePlaying.Text = _ListToPlay.ElementAt(CURRENT_SONG_INDEX);
-            btnPause.Visibility = Visibility.Visible;
-            btnPlay.Visibility = Visibility.Hidden;
-            NowPlayingInfo.Visibility = Visibility.Visible;
-            mediaPlayer.Play();
+            if (_ListToPlay.Count <= 0)
+            {
+                return;
+            }
+            else
+            {
+                TotalSongNumber.Text = _ListToPlay.Count.ToString();
+                SongNamePlaying.Text = _ListToPlay.ElementAt(CURRENT_SONG_INDEX);
+                btnPause.Visibility = Visibility.Visible;
+                btnPlay.Visibility = Visibility.Hidden;
+                NowPlayingInfo.Visibility = Visibility.Visible;
+                mediaPlayer.Play();
+            }
+           
         }
 
         private void BtnPauseClick(object sender, RoutedEventArgs e)
         {
+            mediaPlayer.Pause();
             btnPlay.Visibility = Visibility.Visible;
             btnPause.Visibility = Visibility.Hidden;
-            mediaPlayer.Pause();
         }
 
         private void BtnPreClick(object sender, RoutedEventArgs e)
@@ -132,10 +139,15 @@ namespace MultimediaPlayer
 
         private void BtnPlayAllClick(object sender, RoutedEventArgs e)
         {
+            if (_ListToPlay.Count <= 0)
+            {
+                return;
+            }
             btnPlayAll.Visibility = Visibility.Hidden;
             btnStopAll.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Hidden;
             btnPause.Visibility = Visibility.Visible;
+
             for (int i = 0; i < _ListToPlay.Count; i++)
             {
                 CURRENT_SONG_INDEX = i;
@@ -153,7 +165,6 @@ namespace MultimediaPlayer
           
             //myStoryboard = (Storyboard) FindResource("AnimatedRotateTransform");
             //myStoryboard.Stop();
-            MessageBox.Show("Disc stopped!");
         }
     }
 }

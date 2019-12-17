@@ -61,7 +61,7 @@
                 </ListView>
                 <StackPanel Name="NowPlayingInfo" Orientation="Vertical" Width="300" Margin="30,0,0,0"  VerticalAlignment="Center">
                     <Image Source="Icon/compact-disc.png" 
-                           
+                
                        RenderTransformOrigin=".5,.5"
                        HorizontalAlignment="Center"
                        Width="150"
@@ -71,20 +71,6 @@
                         <Image.RenderTransform>
                             <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
                         </Image.RenderTransform>
-                        <Image.Triggers>
-                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                                <BeginStoryboard>
-                                    <Storyboard>
-                                        <DoubleAnimation Storyboard.TargetName="AnimatedRotateTransform" 
-                            Storyboard.TargetProperty="Angle" 
-                            By="0.1"        
-                            To="19999" 
-                            Duration="0:1:1.5" 
-                            FillBehavior="Stop"/>
-                                    </Storyboard>
-                                </BeginStoryboard>
-                            </EventTrigger>
-                        </Image.Triggers>
                     </Image>
                     <StackPanel Orientation="Horizontal" Margin="40,10,40,10">
                         <TextBlock Text="Playing:" FontWeight="Bold" Foreground="White" />
@@ -95,35 +81,55 @@
                         <TextBlock x:Name="TotalSongNumber" Foreground="White" />
                     </StackPanel>
                 </StackPanel>
-                   
-                </StackPanel>
-            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-            <Button Content="Play" Name="btnPlayAll" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="100"
+
+            </StackPanel>
+            <Canvas Width="100" Height="30" HorizontalAlignment="Center">
+
+                <Button Content="Play" Name="btnPlayAll" FontWeight="Bold" Width="100"
                    Height="30"
-                    Margin="0,0,30,0"
                     Foreground="White"
                     Background="#38ef7d"
                     Click="BtnPlayAllClick"
                     >
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="8"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
-            <Button Content="Stop" Name="btnStopAll" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="100"
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Button Content="Stop" Name="btnStopAll" FontWeight="Bold" Width="100"
                    Height="30"
                     Foreground="White"
                     Background="#ba0f0f"
+                        Visibility="Hidden"
                     Click="BtnStopClick"
                     >
-                <Button.Resources>
-                    <Style TargetType="Border">
-                        <Setter Property="CornerRadius" Value="8"/>
-                    </Style>
-                </Button.Resources>
-            </Button>
-            </StackPanel>
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="8"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                <Canvas.Triggers>
+                    <!-- Begin the Storyboard -->
+                    <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlayAll">
+                        <BeginStoryboard Name="MyBeginStoryboard">
+                            <Storyboard >
+                                <DoubleAnimation Storyboard.TargetName="AnimatedRotateTransform" 
+                            Storyboard.TargetProperty="Angle" 
+                            By="0.1"        
+                            To="19999" 
+                            Duration="0:1:1.5" 
+                            RepeatBehavior="Forever" />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                    <!-- Stop the Storyboard -->
+                    <EventTrigger RoutedEvent="Button.Click" SourceName="btnStopAll">
+                        <StopStoryboard BeginStoryboardName="MyBeginStoryboard" />
+                    </EventTrigger>
+                </Canvas.Triggers>
+            </Canvas>
             <Canvas Height="100" Width="400" HorizontalAlignment="Center" >
                 <Button Name="btnPrevious" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
                     Canvas.Left="109" Canvas.Top="25" Click="BtnPreClick">
