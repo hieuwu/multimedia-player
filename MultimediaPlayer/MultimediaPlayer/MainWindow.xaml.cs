@@ -43,6 +43,7 @@ namespace MultimediaPlayer
             SongNamePlaying.Text = _ListToPlay.ElementAt(CURRENT_SONG_INDEX);
             btnPause.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Hidden;
+            NowPlayingInfo.Visibility = Visibility.Visible;
             mediaPlayer.Play();
         }
 
@@ -129,13 +130,19 @@ namespace MultimediaPlayer
 
         private void BtnPlayAllClick(object sender, RoutedEventArgs e)
         {
-            //for (int i = 0; i < _ListToPlay.Count; i++)
-            //{
-            //    CURRENT_SONG_INDEX = i;
-            //    mediaPlayer.Open(new Uri(_ListToPlay[i]));
-            //    mediaPlayer.Play();
-            //}
-          
+            for (int i = 0; i < _ListToPlay.Count; i++)
+            {
+                CURRENT_SONG_INDEX = i;
+                mediaPlayer = new MediaPlayer();
+                mediaPlayer.Open(new Uri(_ListToPlay[i]));
+                mediaPlayer.Play();
+            }
+
+        }
+
+        private void BtnStopClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

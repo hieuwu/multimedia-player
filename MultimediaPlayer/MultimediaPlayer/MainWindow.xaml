@@ -59,20 +59,20 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <StackPanel Orientation="Vertical" Width="300" Margin="30,0,0,0">
+                <StackPanel Name="NowPlayingInfo" Orientation="Vertical" Width="300" Margin="30,0,0,0"  VerticalAlignment="Center">
                     <Image Source="Icon/compact-disc.png" 
+                           
                        RenderTransformOrigin=".5,.5"
                        HorizontalAlignment="Center"
                        Width="150"
                         Height="150"
                        RenderOptions.BitmapScalingMode="HighQuality"
                        >
-
                         <Image.RenderTransform>
                             <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
                         </Image.RenderTransform>
                         <Image.Triggers>
-                            <EventTrigger RoutedEvent="MouseDown">
+                            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
                                 <BeginStoryboard>
                                     <Storyboard>
                                         <DoubleAnimation Storyboard.TargetName="AnimatedRotateTransform" 
@@ -97,8 +97,10 @@
                 </StackPanel>
                    
                 </StackPanel>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
             <Button Content="Play" Name="btnPlayAll" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="100"
                    Height="30"
+                    Margin="0,0,30,0"
                     Foreground="White"
                     Background="#38ef7d"
                     Click="BtnPlayAllClick"
@@ -109,6 +111,19 @@
                     </Style>
                 </Button.Resources>
             </Button>
+            <Button Content="Stop" Name="btnStopAll" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="100"
+                   Height="30"
+                    Foreground="White"
+                    Background="#ba0f0f"
+                    Click="BtnStopClick"
+                    >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="8"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+            </StackPanel>
             <Canvas Height="100" Width="400" HorizontalAlignment="Center" >
                 <Button Name="btnPrevious" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
                     Canvas.Left="109" Canvas.Top="25" Click="BtnPreClick">
