@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace MultimediaPlayer
 {
@@ -24,20 +25,39 @@ namespace MultimediaPlayer
     public partial class MainWindow : Window
     {
         private MediaPlayer mediaPlayer = new MediaPlayer();
+        int _lastIndex = -1;
+        bool _isPlaying = false;
+        DispatcherTimer _timer;
+
+        static BindingList<Song> _playlist = null;
+        static public List<string> _ListToPlay = _ListToPlay = new List<string>();
         public MainWindow()
         {
             InitializeComponent();
             PlayList.ItemsSource = _playlist;
+            mediaPlayer.MediaEnded += _player_MediaEnded;
+
         }
-        public  int CURRENT_SONG_INDEX = 0;
         public class Song 
         {
             public string SongName {get; set;
             
             }
         }
-        static BindingList<Song> _playlist = null;
-        static public List<string> _ListToPlay = _ListToPlay = new List<string>();
+
+        private void timer_Tick(object sender, EventArgs e)
+        {
+            if (mediaPlayer.Source != null)
+            {
+                var filename = _ListToPlay[_lastIndex];
+                string shortname = _playlist[_lastIndex].SongName;
+                var currentPos = mediaPlayer.Position.ToString(@"mm\:ss");
+                var duration = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+                Title = String.Format($"{currentPos} / {duration} - {shortname}");
+            }
+            else
+                Title = "No file selected...";
+        }
         private void BtnPlayClick(object sender, RoutedEventArgs e)
         {
             if (_ListToPlay.Count <= 0)
@@ -46,14 +66,26 @@ namespace MultimediaPlayer
             }
             else
             {
-                TotalSongNumber.Text = _ListToPlay.Count.ToString();
-                SongNamePlaying.Text = _ListToPlay.ElementAt(CURRENT_SONG_INDEX);
+                mediaPlayer.Play();
                 btnPause.Visibility = Visibility.Visible;
                 btnPlay.Visibility = Visibility.Hidden;
                 NowPlayingInfo.Visibility = Visibility.Visible;
-                mediaPlayer.Play();
             }
            
+        }
+
+        private void PlaySelectedIndex(int i)
+        {
+            string filename = _ListToPlay[i];
+            mediaPlayer.Open(new Uri(filename));
+            mediaPlayer.Play();
+            _isPlaying = true;
+        }
+
+        private void _player_MediaEnded(object sender, EventArgs e)
+        {
+            _lastIndex++;
+            PlaySelectedIndex(_lastIndex);
         }
 
         private void BtnPauseClick(object sender, RoutedEventArgs e)
@@ -65,28 +97,37 @@ namespace MultimediaPlayer
 
         private void BtnPreClick(object sender, RoutedEventArgs e)
         {
-            if (CURRENT_SONG_INDEX == 0)
+            if (_lastIndex == 0)
             {
                 return;
             }
-            mediaPlayer.Stop();
-            CURRENT_SONG_INDEX--;
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
-            mediaPlayer.Play();
+            else
+            {
+                _lastIndex--;
+                PlaySelectedIndex(_lastIndex);
+            }
+            //mediaPlayer.Stop();
+            //CURRENT_SONG_INDEX--;
+            //mediaPlayer = new MediaPlayer();
+            //mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
+            //mediaPlayer.Play();
         }
 
         private void BtnNextClick(object sender, RoutedEventArgs e)
         {
-            if (CURRENT_SONG_INDEX == _ListToPlay.Count - 1)
+            if (_lastIndex == _ListToPlay.Count - 1)
             {
                 return;
             }
-            mediaPlayer.Stop();
-            CURRENT_SONG_INDEX++;
-            mediaPlayer = new MediaPlayer();
-            mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
-            mediaPlayer.Play();
+            else {
+                _lastIndex++;
+                PlaySelectedIndex(_lastIndex);
+            }
+            //mediaPlayer.Stop();
+            //CURRENT_SONG_INDEX++;
+            //mediaPlayer = new MediaPlayer();
+            //mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
+            //mediaPlayer.Play();
         }
 
         private void BtnShuffleEnableClick(object sender, RoutedEventArgs e)
@@ -143,18 +184,23 @@ namespace MultimediaPlayer
             {
                 return;
             }
+            if (PlayList.SelectedIndex >= 0)
+            {
+                _lastIndex = PlayList.SelectedIndex;
+                PlaySelectedIndex(_lastIndex);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("No file selected!");
+                return;
+            }
+
             btnPlayAll.Visibility = Visibility.Hidden;
             btnStopAll.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Hidden;
             btnPause.Visibility = Visibility.Visible;
-
-            for (int i = 0; i < _ListToPlay.Count; i++)
-            {
-                CURRENT_SONG_INDEX = i;
-                mediaPlayer = new MediaPlayer();
-                mediaPlayer.Open(new Uri(_ListToPlay[i]));
-                mediaPlayer.Play();
-            }
+          //  mediaPlayer.Play();
+            _isPlaying = true;
 
         }
 
@@ -162,9 +208,22 @@ namespace MultimediaPlayer
         {
             btnStopAll.Visibility = Visibility.Hidden;
             btnPlayAll.Visibility = Visibility.Visible;
-          
+            btnPlay.Visibility = Visibility.Visible;
+            btnPause.Visibility = Visibility.Hidden;
+            if (_isPlaying)
+            {
+                mediaPlayer.Stop();
+            }
+            else
+            {
+                mediaPlayer.Play();
+            }
+            _isPlaying = !_isPlaying;
+
             //myStoryboard = (Storyboard) FindResource("AnimatedRotateTransform");
             //myStoryboard.Stop();
         }
+
+       
     }
 }
