@@ -11,6 +11,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -22,6 +23,7 @@ namespace MultimediaPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Storyboard myStoryboard;
         private MediaPlayer mediaPlayer = new MediaPlayer();
         public MainWindow()
         {
@@ -130,6 +132,10 @@ namespace MultimediaPlayer
 
         private void BtnPlayAllClick(object sender, RoutedEventArgs e)
         {
+            btnPlayAll.Visibility = Visibility.Hidden;
+            btnStopAll.Visibility = Visibility.Visible;
+            btnPlay.Visibility = Visibility.Hidden;
+            btnPause.Visibility = Visibility.Visible;
             for (int i = 0; i < _ListToPlay.Count; i++)
             {
                 CURRENT_SONG_INDEX = i;
@@ -142,7 +148,12 @@ namespace MultimediaPlayer
 
         private void BtnStopClick(object sender, RoutedEventArgs e)
         {
-
+            btnStopAll.Visibility = Visibility.Hidden;
+            btnPlayAll.Visibility = Visibility.Visible;
+          
+            //myStoryboard = (Storyboard) FindResource("AnimatedRotateTransform");
+            //myStoryboard.Stop();
+            MessageBox.Show("Disc stopped!");
         }
     }
 }
