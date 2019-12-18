@@ -5,7 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MultimediaPlayer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="800">
+        Title="MainWindow" Height="500" Width="900"
+        Loaded="Window_Loaded"
+        >
     <Grid>
 
         <Border Margin="10,10,9.6,10" BorderBrush="Black" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" RenderTransformOrigin="0.502,0.503">
@@ -16,7 +18,8 @@
                 </LinearGradientBrush>
             </Border.Background>
         </Border>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center"
+                    Width="900">
             <Button Content="Open audio file" Name="btnOpenAudioFile" FontWeight="Bold"  Canvas.Left="338" Canvas.Top="137" Width="100"
                    Height="30"
                     Foreground="White"
@@ -30,12 +33,46 @@
                 </Button.Resources>
             </Button>
             <StackPanel Orientation="Horizontal"
-                        Margin="10"
+                        Margin="5"
                         HorizontalAlignment="Stretch"
                         >
-                <ListView BorderThickness="0" Name="PlayList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Width="300" Height="275"
-                      Background="Transparent" Margin="0,0,30,0"
+                <StackPanel Orientation="Vertical"  Margin="30,7,7,7" HorizontalAlignment="Left">
+                    <Button Name="btnSave" Width="70" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71" Click="BtnPreClick" Margin="30,7,7,7"  HorizontalAlignment="Left" >
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Icon/download.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Margin="10,0,0,0" Text="Save"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button  HorizontalAlignment="Left" Name="btnLoad" Width="70" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71" Margin="30,7,7,7">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Icon/loading.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Margin="10,0,0,0" Text="Load"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                    <Button  Name="btnAddPlaylist" Width="100" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71"  Margin="30,7,7,7">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Icon/list-menu.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Margin="10,0,0,0" Text="Add playlist"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <ListView BorderThickness="0" Name="PlayList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Width="250" Height="275"
+                      Background="Transparent" Margin="100,7,70,7" SelectionMode="Multiple"
                       >
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Remove" Click="btnDeleteOneSongClick"/>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
                     <ListView.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Vertical"/>
@@ -59,9 +96,8 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
-                <StackPanel Name="NowPlayingInfo" Orientation="Vertical" Width="300" Margin="30,0,0,0"  VerticalAlignment="Center">
-                    <Image Source="Icon/compact-disc.png" 
-                
+                <StackPanel Name="NowPlayingInfo" Orientation="Vertical" Width="250" Margin="30,0,0,0"  VerticalAlignment="Center">
+                    <Image Source="Icon/compact-disc.png"
                        RenderTransformOrigin=".5,.5"
                        HorizontalAlignment="Center"
                        Width="150"
@@ -81,9 +117,7 @@
                         <TextBlock x:Name="TotalSongNumber" Foreground="White" />
                     </StackPanel>
                 </StackPanel>
-
             </StackPanel>
-
             <Canvas Height="140" Width="400" HorizontalAlignment="Center" >
                 <Button Name="btnPrevious" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
                     Canvas.Left="107" Canvas.Top="71" Click="BtnPreClick">
@@ -186,7 +220,7 @@
                 </Button>
                 <Canvas.Triggers>
                     <!-- Begin the Storyboard -->
-                    <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlayAll">
+                    <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlay">
                         <BeginStoryboard Name="MyBeginStoryboard">
                             <Storyboard >
                                 <DoubleAnimation Storyboard.TargetName="AnimatedRotateTransform" 
@@ -204,9 +238,6 @@
                     </EventTrigger>
                     <EventTrigger RoutedEvent="Button.Click" SourceName="btnPause">
                         <PauseStoryboard BeginStoryboardName="MyBeginStoryboard" />
-                    </EventTrigger>
-                    <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlay">
-                        <ResumeStoryboard BeginStoryboardName="MyBeginStoryboard" />
                     </EventTrigger>
                 </Canvas.Triggers>
             </Canvas>

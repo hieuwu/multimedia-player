@@ -114,5 +114,14 @@
   <ItemGroup>
     <Resource Include="Icon\compact-disc.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\loading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\list-menu.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -28,21 +28,25 @@ namespace MultimediaPlayer
         int _lastIndex = -1;
         bool _isPlaying = false;
         DispatcherTimer _timer;
-
-        static BindingList<Song> _playlist = null;
-        static public List<string> _ListToPlay = _ListToPlay = new List<string>();
+        BindingList<Song> _playlist = null;
+        public List<string> _ListToPlay = new List<string>();
         public MainWindow()
         {
             InitializeComponent();
-            PlayList.ItemsSource = _playlist;
             mediaPlayer.MediaEnded += _player_MediaEnded;
+            _timer = new DispatcherTimer();
+            _timer.Interval = TimeSpan.FromSeconds(1);
+            _timer.Tick += timer_Tick;
 
         }
-        public class Song 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            public string SongName {get; set;
-            
-            }
+            _playlist = new BindingList<Song>();
+            PlayList.ItemsSource = _playlist;
+        }
+        public class Song
+        {
+            public string SongName { get; set; }
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -58,20 +62,26 @@ namespace MultimediaPlayer
             else
                 Title = "No file selected...";
         }
+
         private void BtnPlayClick(object sender, RoutedEventArgs e)
         {
             if (_ListToPlay.Count <= 0)
             {
                 return;
             }
-            else
+            if (PlayList.SelectedIndex >= 0)
             {
-                mediaPlayer.Play();
+                _lastIndex = PlayList.SelectedIndex;
+                PlaySelectedIndex(_lastIndex);
                 btnPause.Visibility = Visibility.Visible;
                 btnPlay.Visibility = Visibility.Hidden;
                 NowPlayingInfo.Visibility = Visibility.Visible;
             }
-           
+            else
+            {
+                System.Windows.MessageBox.Show("No file selected!");
+                return;
+            }
         }
 
         private void PlaySelectedIndex(int i)
@@ -80,6 +90,7 @@ namespace MultimediaPlayer
             mediaPlayer.Open(new Uri(filename));
             mediaPlayer.Play();
             _isPlaying = true;
+            _timer.Start();
         }
 
         private void _player_MediaEnded(object sender, EventArgs e)
@@ -106,11 +117,6 @@ namespace MultimediaPlayer
                 _lastIndex--;
                 PlaySelectedIndex(_lastIndex);
             }
-            //mediaPlayer.Stop();
-            //CURRENT_SONG_INDEX--;
-            //mediaPlayer = new MediaPlayer();
-            //mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
-            //mediaPlayer.Play();
         }
 
         private void BtnNextClick(object sender, RoutedEventArgs e)
@@ -119,15 +125,11 @@ namespace MultimediaPlayer
             {
                 return;
             }
-            else {
+            else
+            {
                 _lastIndex++;
                 PlaySelectedIndex(_lastIndex);
             }
-            //mediaPlayer.Stop();
-            //CURRENT_SONG_INDEX++;
-            //mediaPlayer = new MediaPlayer();
-            //mediaPlayer.Open(new Uri(_ListToPlay.ElementAt(CURRENT_SONG_INDEX)));
-            //mediaPlayer.Play();
         }
 
         private void BtnShuffleEnableClick(object sender, RoutedEventArgs e)
@@ -167,15 +169,16 @@ namespace MultimediaPlayer
             if (openFileDialog.ShowDialog() == true)
             {
                 mediaPlayer.Open(new Uri(openFileDialog.FileName));
-                _playlist = new BindingList<Song>();
-              
+
                 _ListToPlay.Add(openFileDialog.FileName);
                 Song aSong = new Song()
                 {
                     SongName = openFileDialog.SafeFileName.ToString(),
                 };
-                PlayList.Items.Add(aSong);
+                _playlist.Add(aSong);
+
             }
+            PlayList.ItemsSource = _playlist;
         }
 
         private void BtnPlayAllClick(object sender, RoutedEventArgs e)
@@ -195,12 +198,12 @@ namespace MultimediaPlayer
                 return;
             }
 
+            _isPlaying = true;
+
             btnPlayAll.Visibility = Visibility.Hidden;
             btnStopAll.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Hidden;
             btnPause.Visibility = Visibility.Visible;
-          //  mediaPlayer.Play();
-            _isPlaying = true;
 
         }
 
@@ -219,11 +222,13 @@ namespace MultimediaPlayer
                 mediaPlayer.Play();
             }
             _isPlaying = !_isPlaying;
-
-            //myStoryboard = (Storyboard) FindResource("AnimatedRotateTransform");
-            //myStoryboard.Stop();
         }
 
-       
+        private void btnDeleteOneSongClick(object sender, RoutedEventArgs e)
+        {
+            var aSong = (Song)PlayList.SelectedItem;
+            _playlist.Remove(aSong);
+            MessageBox.Show("Removed " + aSong.SongName);
+        }
     }
 }
