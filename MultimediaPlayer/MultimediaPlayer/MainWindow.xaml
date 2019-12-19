@@ -8,6 +8,9 @@
         Title="MainWindow" Height="500" Width="900"
         Loaded="Window_Loaded"
         >
+    <Window.Resources>
+        <local:NameConverter x:Key="converter"/>
+    </Window.Resources>
     <Grid>
 
         <Border Margin="10,10,9.6,10" BorderBrush="Black" BorderThickness="1,1,1,1" CornerRadius="8,8,8,8" RenderTransformOrigin="0.502,0.503">
@@ -37,33 +40,43 @@
                         HorizontalAlignment="Stretch"
                         >
                 <StackPanel Orientation="Vertical"  Margin="30,7,7,7" HorizontalAlignment="Left">
-                    <Button Name="btnSave" Width="70" Height="30"  Background="Transparent" BorderThickness="0" 
-                    Canvas.Left="107" Canvas.Top="71" Click="BtnPreClick" Margin="30,7,7,7"  HorizontalAlignment="Left" >
+                    <Button Name="btnSave" Width="100" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71" Click="BtnSavePlaylistClick" Margin="30,7,7,7"  HorizontalAlignment="Left" >
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Icon/download.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Margin="10,0,0,0" Text="Save"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="Save playlist"  VerticalAlignment="Center" Foreground="White"></TextBlock>
                         </StackPanel>
                     </Button>
-                    <Button  HorizontalAlignment="Left" Name="btnLoad" Width="70" Height="30"  Background="Transparent" BorderThickness="0" 
-                    Canvas.Left="107" Canvas.Top="71" Margin="30,7,7,7">
+                    <Button  HorizontalAlignment="Left" Name="btnLoad" Width="103" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71" Margin="30,7,7,7" Click="BtnLoadplaylistClick">
                         <StackPanel Orientation="Horizontal">
                             <Image Source="Icon/loading.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Margin="10,0,0,0" Text="Load"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="Load playlist"  VerticalAlignment="Center" Foreground="White"></TextBlock>
                         </StackPanel>
                     </Button>
-                    <Button  Name="btnAddPlaylist" Width="100" Height="30"  Background="Transparent" BorderThickness="0" 
-                    Canvas.Left="107" Canvas.Top="71"  Margin="30,7,7,7">
+                    <Button  Name="btnSaveState" Width="100" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71"  Margin="30,7,7,7" Click="BtnSaveStateClick">
                         <StackPanel Orientation="Horizontal">
-                            <Image Source="Icon/list-menu.png" Height="24" Width="24"  
+                            <Image Source="Icon/save-state.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
-                            <TextBlock Margin="10,0,0,0" Text="Add playlist"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                            <TextBlock Margin="10,0,0,0" Text="Save state"  VerticalAlignment="Center" Foreground="White"></TextBlock>
                         </StackPanel>
                     </Button>
+                    <Button  Name="btnLoadState" Width="103" Height="30"  Background="Transparent" BorderThickness="0" 
+                    Canvas.Left="107" Canvas.Top="71"  Margin="30,7,7,7" Click="BtnLoadStateClick">
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Icon/load-state.png" Height="24" Width="24"  
+                        HorizontalAlignment="Center"
+                       RenderOptions.BitmapScalingMode="HighQuality"/>
+                            <TextBlock Margin="10,0,0,0" Text="Load state"  VerticalAlignment="Center" Foreground="White"></TextBlock>
+                        </StackPanel>
+                    </Button>
+                   
                 </StackPanel>
                 <ListView BorderThickness="0" Name="PlayList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Width="250" Height="275"
                       Background="Transparent" Margin="100,7,70,7" SelectionMode="Multiple"
@@ -86,7 +99,7 @@
                                     <TextBlock TextWrapping="Wrap"
                                  HorizontalAlignment="Left"
                                  VerticalAlignment="Center"
-                                 Text="{Binding SongName}"
+                                 Text="{Binding Name}"
                                  FontWeight="Bold"
                                  Foreground="White"
                                  />

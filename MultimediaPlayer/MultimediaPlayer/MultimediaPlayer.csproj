@@ -69,6 +69,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="NameConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -122,6 +123,10 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icon\list-menu.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icon\load-state.png" />
+    <Resource Include="Icon\save-state.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

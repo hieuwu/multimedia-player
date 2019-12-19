@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,8 +29,6 @@ namespace MultimediaPlayer
         int _lastIndex = -1;
         bool _isPlaying = false;
         DispatcherTimer _timer;
-        BindingList<Song> _playlist = null;
-        public List<string> _ListToPlay = new List<string>();
         public MainWindow()
         {
             InitializeComponent();
@@ -41,8 +40,8 @@ namespace MultimediaPlayer
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            _playlist = new BindingList<Song>();
-            PlayList.ItemsSource = _playlist;
+            PlayList.ItemsSource = _fullPaths;
+
         }
         public class Song
         {
@@ -53,8 +52,9 @@ namespace MultimediaPlayer
         {
             if (mediaPlayer.Source != null)
             {
-                var filename = _ListToPlay[_lastIndex];
-                string shortname = _playlist[_lastIndex].SongName;
+                var filename = _fullPaths[_lastIndex].Name;
+                var converter = new NameConverter();
+                var shortname = converter.Convert(filename, null, null, null);
                 var currentPos = mediaPlayer.Position.ToString(@"mm\:ss");
                 var duration = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
                 Title = String.Format($"{currentPos} / {duration} - {shortname}");
@@ -65,7 +65,7 @@ namespace MultimediaPlayer
 
         private void BtnPlayClick(object sender, RoutedEventArgs e)
         {
-            if (_ListToPlay.Count <= 0)
+            if (_fullPaths.Count <= 0)
             {
                 return;
             }
@@ -86,7 +86,7 @@ namespace MultimediaPlayer
 
         private void PlaySelectedIndex(int i)
         {
-            string filename = _ListToPlay[i];
+            string filename = _fullPaths[i].FullName;
             mediaPlayer.Open(new Uri(filename));
             mediaPlayer.Play();
             _isPlaying = true;
@@ -121,7 +121,7 @@ namespace MultimediaPlayer
 
         private void BtnNextClick(object sender, RoutedEventArgs e)
         {
-            if (_lastIndex == _ListToPlay.Count - 1)
+            if (_lastIndex == _fullPaths.Count - 1)
             {
                 return;
             }
@@ -162,28 +162,21 @@ namespace MultimediaPlayer
             btnLoopDisable.Visibility = Visibility.Visible;
         }
 
+        BindingList<FileInfo> _fullPaths = new BindingList<FileInfo>();
         private void BtnOpenAudioFileClick(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "MP3 files (*.mp3)|*.mp3|All files (*.*)|*.*";
+            openFileDialog.Filter = "MP3 files (*.mp3)|*.mp3";
             if (openFileDialog.ShowDialog() == true)
             {
-                mediaPlayer.Open(new Uri(openFileDialog.FileName));
-
-                _ListToPlay.Add(openFileDialog.FileName);
-                Song aSong = new Song()
-                {
-                    SongName = openFileDialog.SafeFileName.ToString(),
-                };
-                _playlist.Add(aSong);
-
+                var info = new FileInfo(openFileDialog.FileName);
+                _fullPaths.Add(info);
             }
-            PlayList.ItemsSource = _playlist;
         }
 
         private void BtnPlayAllClick(object sender, RoutedEventArgs e)
         {
-            if (_ListToPlay.Count <= 0)
+            if (_fullPaths.Count <= 0)
             {
                 return;
             }
@@ -199,7 +192,7 @@ namespace MultimediaPlayer
             }
 
             _isPlaying = true;
-
+        
             btnPlayAll.Visibility = Visibility.Hidden;
             btnStopAll.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Hidden;
@@ -226,9 +219,62 @@ namespace MultimediaPlayer
 
         private void btnDeleteOneSongClick(object sender, RoutedEventArgs e)
         {
-            var aSong = (Song)PlayList.SelectedItem;
-            _playlist.Remove(aSong);
-            MessageBox.Show("Removed " + aSong.SongName);
+            var aSong = (FileInfo)PlayList.SelectedItem;
+            _fullPaths.Remove(aSong);
+            MessageBox.Show("Removed ");
+        }
+
+        private void BtnSavePlaylistClick(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog save = new SaveFileDialog();
+            save.FileName = "MyPlaylist.txt";
+            save.DefaultExt = "txt";
+            save.FilterIndex = 2;
+            save.Filter = "Text File | *.txt";
+
+            if (save.ShowDialog() == true)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                for (int i = 0; i < _fullPaths.Count; i++)
+                {
+                    writer.WriteLine(_fullPaths[i].FullName);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
+
+        }
+
+        private void BtnLoadplaylistClick(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            string play; string[] separatingStrings = {"\n" };
+            string[] words;
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                play = File.ReadAllText(openFileDialog.FileName);
+                words = play.Split(separatingStrings,
+                                    System.StringSplitOptions.RemoveEmptyEntries);
+                FileInfo fileInfo;
+                for (int i = 0; i< words.Length; i++)
+                {
+                     fileInfo = new FileInfo(words[i].Replace("\r", ""));
+                    _fullPaths.Add(fileInfo);
+                }
+            }
+
+        }
+
+        private void BtnSaveStateClick(object sender, RoutedEventArgs e)
+        {
+           
+        }
+
+        private void BtnLoadStateClick(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
