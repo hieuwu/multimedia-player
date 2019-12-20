@@ -25,10 +25,19 @@ namespace MultimediaPlayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private bool userIsDraggingSlider = false;
         private MediaPlayer mediaPlayer = new MediaPlayer();
         int _lastIndex = -1;
         bool _isPlaying = false;
         DispatcherTimer _timer;
+        int shuffleMode = 0;
+        // shuffleMode = 0 => disabled
+        // shuffleMode = 1 => play random song
+        int loopMode = 0;
+        //loopMode = 0 => loop disabled
+        //loopMode = 1 => loop all list
+        //loopMode = 2 => loop one song
+
         public MainWindow()
         {
             InitializeComponent();
@@ -43,21 +52,20 @@ namespace MultimediaPlayer
             PlayList.ItemsSource = _fullPaths;
 
         }
-        public class Song
-        {
-            public string SongName { get; set; }
-        }
 
         private void timer_Tick(object sender, EventArgs e)
         {
-            if (mediaPlayer.Source != null)
+            if ((mediaPlayer.Source != null) && (mediaPlayer.NaturalDuration.HasTimeSpan) && (!userIsDraggingSlider))
             {
-                var filename = _fullPaths[_lastIndex].Name;
-                var converter = new NameConverter();
-                var shortname = converter.Convert(filename, null, null, null);
-                var currentPos = mediaPlayer.Position.ToString(@"mm\:ss");
+                sliProgress.Minimum = 0;
+                sliProgress.Maximum = mediaPlayer.NaturalDuration.TimeSpan.TotalSeconds;
+                sliProgress.Value = mediaPlayer.Position.TotalSeconds;
+            }
+            if (mediaPlayer.NaturalDuration.HasTimeSpan)
+            {
                 var duration = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
-                Title = String.Format($"{currentPos} / {duration} - {shortname}");
+                // totalTime.Text = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
+                totalTime.Text = duration;
             }
             else
                 Title = "No file selected...";
@@ -69,8 +77,18 @@ namespace MultimediaPlayer
             {
                 return;
             }
+            if (_isPlaying == true)
+            {
+                mediaPlayer.Play();
+                TotalSongNumber.Text = _fullPaths.Count.ToString();
+                btnPause.Visibility = Visibility.Visible;
+                btnPlay.Visibility = Visibility.Hidden;
+                return;
+            }
             if (PlayList.SelectedIndex >= 0)
             {
+                TotalSongNumber.Text = _fullPaths.Count.ToString();
+                btnStopAll.Visibility = Visibility.Visible;
                 _lastIndex = PlayList.SelectedIndex;
                 PlaySelectedIndex(_lastIndex);
                 btnPause.Visibility = Visibility.Visible;
@@ -87,16 +105,84 @@ namespace MultimediaPlayer
         private void PlaySelectedIndex(int i)
         {
             string filename = _fullPaths[i].FullName;
+            var shortFileName = _fullPaths[i].Name;
+            var converter = new NameConverter();
+            var shortname = converter.Convert(shortFileName, null, null, null);
+            SongNamePlaying.Text = shortname.ToString();
             mediaPlayer.Open(new Uri(filename));
             mediaPlayer.Play();
             _isPlaying = true;
+           
             _timer.Start();
         }
 
+        List<int> playedSong = new List<int>();
         private void _player_MediaEnded(object sender, EventArgs e)
         {
-            _lastIndex++;
-            PlaySelectedIndex(_lastIndex);
+
+            //_lastIndex++;
+            //PlaySelectedIndex(_lastIndex);
+            if (loopMode == 2)
+            {
+                PlaySelectedIndex(_lastIndex);
+            }
+            else
+            {
+                if (shuffleMode == 0)
+                {
+                    if (loopMode == 0)
+                    {
+                        //Play Playlist one time
+                        if (_lastIndex == _fullPaths.Count - 1)
+                        {
+                            return;
+                        }
+                        _lastIndex++;
+                        PlaySelectedIndex(_lastIndex);
+                    }
+                    if (loopMode == 1)
+                    {
+                        //Play all list continually
+                        if (_lastIndex == _fullPaths.Count - 1)
+                        {
+                            _lastIndex = -1;
+                        }
+                        _lastIndex++;
+                        PlaySelectedIndex(_lastIndex);
+                    }
+
+                }
+                else  
+                {
+                    if (loopMode == 0)
+                    {
+                        //Play random in list - if meet last song then stop
+                        if (_lastIndex == _fullPaths.Count - 1)
+                        {
+                            return;
+                        }
+                        Random randomNumber = new Random();
+                        _lastIndex = randomNumber.Next(0, _fullPaths.Count);
+                        while (playedSong.Contains(_lastIndex))
+                        {
+                            _lastIndex = randomNumber.Next(0, _fullPaths.Count);
+                        }
+                        if (playedSong.Count == _fullPaths.Count)
+                        {
+                            playedSong.Clear();
+                        }
+                        playedSong.Add(_lastIndex);
+                        PlaySelectedIndex(_lastIndex);
+                    }
+                    else if (loopMode == 1)
+                    {
+                        //Play random all list continually
+                        Random randomNumber = new Random();
+                        _lastIndex = randomNumber.Next(0, _fullPaths.Count);
+                        PlaySelectedIndex(_lastIndex);
+                    }
+                }
+            }
         }
 
         private void BtnPauseClick(object sender, RoutedEventArgs e)
@@ -121,43 +207,59 @@ namespace MultimediaPlayer
 
         private void BtnNextClick(object sender, RoutedEventArgs e)
         {
-            if (_lastIndex == _fullPaths.Count - 1)
+            if (_lastIndex +1 >= _fullPaths.Count )
             {
                 return;
             }
             else
             {
+                _timer.Stop();
                 _lastIndex++;
                 PlaySelectedIndex(_lastIndex);
             }
         }
 
+        //When clicked on Shuffle enable => Switch to shuffle disabled
         private void BtnShuffleEnableClick(object sender, RoutedEventArgs e)
         {
+            shuffleMode = 0;
+            MessageBox.Show(shuffleMode+"");
             btnShuffleEnable.Visibility = Visibility.Hidden;
             btnShuffleDisable.Visibility = Visibility.Visible;
         }
 
+        //When clicked on Shuffle disable => Switch to shuffle enabled
         private void BtnShuffleDisableClick(object sender, RoutedEventArgs e)
         {
+            shuffleMode = 1;
+            MessageBox.Show(shuffleMode + "");
             btnShuffleDisable.Visibility = Visibility.Hidden;
             btnShuffleEnable.Visibility = Visibility.Visible;
         }
 
+        //When clicked on Loop All => Switch to Loop One feature
         private void BtnLoopAllClick(object sender, RoutedEventArgs e)
         {
+            loopMode = 2;
+            MessageBox.Show(loopMode + "");
             btnLoopAll.Visibility = Visibility.Hidden;
             btnLoopOne.Visibility = Visibility.Visible;
         }
 
+        //When clicked on Loop Disable => Switch to Loop All List feature
         private void BtnLoopDisableClick(object sender, RoutedEventArgs e)
         {
+            loopMode = 1;
+            MessageBox.Show(loopMode + "");
             btnLoopDisable.Visibility = Visibility.Hidden;
             btnLoopAll.Visibility = Visibility.Visible;
         }
 
+        //When clicked on Loop One => Switch to Loop Disable
         private void BtnLoopOneClick(object sender, RoutedEventArgs e)
         {
+            loopMode = 0;
+            MessageBox.Show(loopMode + "");
             btnLoopOne.Visibility = Visibility.Hidden;
             btnLoopDisable.Visibility = Visibility.Visible;
         }
@@ -174,36 +276,9 @@ namespace MultimediaPlayer
             }
         }
 
-        private void BtnPlayAllClick(object sender, RoutedEventArgs e)
-        {
-            if (_fullPaths.Count <= 0)
-            {
-                return;
-            }
-            if (PlayList.SelectedIndex >= 0)
-            {
-                _lastIndex = PlayList.SelectedIndex;
-                PlaySelectedIndex(_lastIndex);
-            }
-            else
-            {
-                System.Windows.MessageBox.Show("No file selected!");
-                return;
-            }
-
-            _isPlaying = true;
-        
-            btnPlayAll.Visibility = Visibility.Hidden;
-            btnStopAll.Visibility = Visibility.Visible;
-            btnPlay.Visibility = Visibility.Hidden;
-            btnPause.Visibility = Visibility.Visible;
-
-        }
-
         private void BtnStopClick(object sender, RoutedEventArgs e)
         {
             btnStopAll.Visibility = Visibility.Hidden;
-            btnPlayAll.Visibility = Visibility.Visible;
             btnPlay.Visibility = Visibility.Visible;
             btnPause.Visibility = Visibility.Hidden;
             if (_isPlaying)
@@ -219,9 +294,17 @@ namespace MultimediaPlayer
 
         private void btnDeleteOneSongClick(object sender, RoutedEventArgs e)
         {
-            var aSong = (FileInfo)PlayList.SelectedItem;
-            _fullPaths.Remove(aSong);
-            MessageBox.Show("Removed ");
+            if (_isPlaying == true)
+            {
+                MessageBox.Show("Can not remove while playing ");
+
+            }
+            else
+            {
+                var aSong = (FileInfo)PlayList.SelectedItem;
+                _fullPaths.Remove(aSong);
+                MessageBox.Show("Removed ");
+            }
         }
 
         private void BtnSavePlaylistClick(object sender, RoutedEventArgs e)
@@ -264,7 +347,6 @@ namespace MultimediaPlayer
                     _fullPaths.Add(fileInfo);
                 }
             }
-
         }
 
         private void BtnSaveStateClick(object sender, RoutedEventArgs e)
@@ -275,6 +357,22 @@ namespace MultimediaPlayer
         private void BtnLoadStateClick(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void sliProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)
+        {
+            userIsDraggingSlider = true;
+        }
+
+        private void sliProgress_DragCompleted(object sender, System.Windows.Controls.Primitives.DragCompletedEventArgs e)
+        {
+            userIsDraggingSlider = false;
+            mediaPlayer.Position = TimeSpan.FromSeconds(sliProgress.Value);
+        }
+
+        private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"mm\:ss");
         }
     }
 }

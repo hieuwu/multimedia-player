@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MultimediaPlayer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="500" Width="900"
+        Title="Multimedia Player" Height="500" Width="900"
         Loaded="Window_Loaded"
         >
     <Window.Resources>
@@ -76,7 +76,7 @@
                             <TextBlock Margin="10,0,0,0" Text="Load state"  VerticalAlignment="Center" Foreground="White"></TextBlock>
                         </StackPanel>
                     </Button>
-                   
+
                 </StackPanel>
                 <ListView BorderThickness="0" Name="PlayList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Width="250" Height="275"
                       Background="Transparent" Margin="100,7,70,7" SelectionMode="Multiple"
@@ -123,11 +123,11 @@
                     </Image>
                     <StackPanel Orientation="Horizontal" Margin="40,10,40,10">
                         <TextBlock Text="Playing:" FontWeight="Bold" Foreground="White" />
-                        <TextBlock x:Name="SongNamePlaying" Foreground="White" />
+                        <TextBlock x:Name="SongNamePlaying" Foreground="White" Margin="15,0,0,0" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal"  Margin="40,0,40,0">
                         <TextBlock Text="Total:" FontWeight="Bold" Foreground="White" />
-                        <TextBlock x:Name="TotalSongNumber" Foreground="White" />
+                        <TextBlock x:Name="TotalSongNumber" Margin="15,0,0,0" Foreground="White" />
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -175,7 +175,7 @@
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 </Button>
                 <Button  Name="btnShuffleEnable" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
-                         Canvas.Left="10" Canvas.Top="25"
+                         Canvas.Left="10" Canvas.Top="71"
                      Click="BtnShuffleEnableClick" Visibility="Hidden">
                     <Image Source="Icon/shuffle-enabled-button.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
@@ -190,38 +190,25 @@
                 </Button>
 
                 <Button  Name="btnLoopAll" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
-                         Canvas.Left="360" Canvas.Top="25" Visibility="Hidden"
+                          Canvas.Left="360" Canvas.Top="71" Visibility="Hidden"
                      Click="BtnLoopAllClick" >
                     <Image Source="Icon/loop-all.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 </Button>
                 <Button  Name="btnLoopOne" Width="30" Height="30"  Background="Transparent" BorderThickness="0" 
-                         Canvas.Left="360" Canvas.Top="25"
+                          Canvas.Left="360" Canvas.Top="71"
                           Visibility="Hidden"
                      Click="BtnLoopOneClick" >
                     <Image Source="Icon/loop-one.png" Height="24" Width="24"  
                         HorizontalAlignment="Center"
                        RenderOptions.BitmapScalingMode="HighQuality"/>
                 </Button>
-
-                <Button Content="Play" Name="btnPlayAll" FontWeight="Bold" Width="100"
-                   Height="30"
-                    Foreground="White"
-                    Background="#38ef7d"
-                    Click="BtnPlayAllClick" Canvas.Left="150"
-                    >
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="8"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
                 <Button Content="Stop" Name="btnStopAll" FontWeight="Bold" Width="100"
                    Height="30"
                     Foreground="White"
                     Background="#ba0f0f"
-                        Visibility="Hidden"
+                    Visibility="Hidden"
                     Click="BtnStopClick"
                         Canvas.Left="150"
                     >
@@ -231,6 +218,14 @@
                         </Style>
                     </Button.Resources>
                 </Button>
+                <StatusBar Canvas.Top="35"  Background="Transparent">
+                    <TextBlock Name="lblProgressStatus" Foreground="White">00:00</TextBlock>
+                    <Slider Name="sliProgress" Thumb.DragStarted="sliProgress_DragStarted"
+                            Thumb.DragCompleted="sliProgress_DragCompleted" 
+                            ValueChanged="sliProgress_ValueChanged"
+                            Canvas.Top="37" Width="432" />
+                    <TextBlock Name="totalTime" Foreground="White">00:00</TextBlock>
+                </StatusBar>
                 <Canvas.Triggers>
                     <!-- Begin the Storyboard -->
                     <EventTrigger RoutedEvent="Button.Click" SourceName="btnPlay">
