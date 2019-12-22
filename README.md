@@ -24,7 +24,7 @@ A desktop application built with WPF allow you to play song or video. I made thi
   <li>Basic control in WPF: Label, TextBlock, TextBox, Button, Image, Timer, TreeView, ListView</li>
   <li>Use container to create UI</li>
   <li>Play with media object</li>
-  <li>Use trigger to con trol animation</li>
+  <li>Use trigger to control animation</li>
 </ul>
 
 
