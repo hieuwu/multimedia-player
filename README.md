@@ -19,7 +19,13 @@ A desktop application built with WPF allow you to play song or video. I made thi
   <li>Control all the playing mode while the program is run in background</li>
 </ul>
 
-# Techniques applied:
+# Techniques used:
+<ul>
+  <li>Basic control in WPF: Label, TextBlock, TextBox, Button, Image, Timer, TreeView, ListView</li>
+  <li>Use container to create UI</li>
+  <li>Play with media object</li>
+  <li>Use trigger to con trol animation</li>
+</ul>
 
 
 # Main window:
