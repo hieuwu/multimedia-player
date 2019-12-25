@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Gma.System.MouseKeyHook;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Windows.Forms;
 
 namespace MultimediaPlayer
 {
@@ -38,6 +40,9 @@ namespace MultimediaPlayer
         //loopMode = 1 => loop all list
         //loopMode = 2 => loop one song
 
+        //hook
+        private IKeyboardMouseEvents _hook;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -45,6 +50,10 @@ namespace MultimediaPlayer
             _timer = new DispatcherTimer();
             _timer.Interval = TimeSpan.FromSeconds(1);
             _timer.Tick += timer_Tick;
+
+            //dang ki su kien hook
+            _hook = Hook.GlobalEvents();
+            _hook.KeyUp += KeyUp_hook;
 
         }
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -97,8 +106,16 @@ namespace MultimediaPlayer
             }
             else
             {
-                System.Windows.MessageBox.Show("No file selected!");
-                return;
+                TotalSongNumber.Text = _fullPaths.Count.ToString();
+                btnStopAll.Visibility = Visibility.Visible;
+                _lastIndex = 0;
+                PlaySelectedIndex(_lastIndex);
+                btnPause.Visibility = Visibility.Visible;
+                btnPlay.Visibility = Visibility.Hidden;
+                NowPlayingInfo.Visibility = Visibility.Visible;
+
+                //System.Windows.MessageBox.Show("No file selected!");
+                //return;
             }
         }
 
@@ -223,7 +240,7 @@ namespace MultimediaPlayer
         private void BtnShuffleEnableClick(object sender, RoutedEventArgs e)
         {
             shuffleMode = 0;
-            MessageBox.Show(shuffleMode+"");
+            System.Windows.MessageBox.Show(shuffleMode+"");
             btnShuffleEnable.Visibility = Visibility.Hidden;
             btnShuffleDisable.Visibility = Visibility.Visible;
         }
@@ -232,7 +249,7 @@ namespace MultimediaPlayer
         private void BtnShuffleDisableClick(object sender, RoutedEventArgs e)
         {
             shuffleMode = 1;
-            MessageBox.Show(shuffleMode + "");
+            System.Windows.MessageBox.Show(shuffleMode + "");
             btnShuffleDisable.Visibility = Visibility.Hidden;
             btnShuffleEnable.Visibility = Visibility.Visible;
         }
@@ -241,7 +258,7 @@ namespace MultimediaPlayer
         private void BtnLoopAllClick(object sender, RoutedEventArgs e)
         {
             loopMode = 2;
-            MessageBox.Show(loopMode + "");
+            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopAll.Visibility = Visibility.Hidden;
             btnLoopOne.Visibility = Visibility.Visible;
         }
@@ -250,7 +267,7 @@ namespace MultimediaPlayer
         private void BtnLoopDisableClick(object sender, RoutedEventArgs e)
         {
             loopMode = 1;
-            MessageBox.Show(loopMode + "");
+            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopDisable.Visibility = Visibility.Hidden;
             btnLoopAll.Visibility = Visibility.Visible;
         }
@@ -259,7 +276,7 @@ namespace MultimediaPlayer
         private void BtnLoopOneClick(object sender, RoutedEventArgs e)
         {
             loopMode = 0;
-            MessageBox.Show(loopMode + "");
+            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopOne.Visibility = Visibility.Hidden;
             btnLoopDisable.Visibility = Visibility.Visible;
         }
@@ -267,7 +284,7 @@ namespace MultimediaPlayer
         BindingList<FileInfo> _fullPaths = new BindingList<FileInfo>();
         private void BtnOpenAudioFileClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "MP3 files (*.mp3)|*.mp3";
             if (openFileDialog.ShowDialog() == true)
             {
@@ -296,20 +313,20 @@ namespace MultimediaPlayer
         {
             if (_isPlaying == true)
             {
-                MessageBox.Show("Can not remove while playing ");
+                System.Windows.MessageBox.Show("Can not remove while playing ");
 
             }
             else
             {
                 var aSong = (FileInfo)PlayList.SelectedItem;
                 _fullPaths.Remove(aSong);
-                MessageBox.Show("Removed ");
+                System.Windows.MessageBox.Show("Removed ");
             }
         }
 
         private void BtnSavePlaylistClick(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog save = new SaveFileDialog();
+            var save = new Microsoft.Win32.SaveFileDialog();
             save.FileName = "MyPlaylist.txt";
             save.DefaultExt = "txt";
             save.FilterIndex = 2;
@@ -330,7 +347,7 @@ namespace MultimediaPlayer
 
         private void BtnLoadplaylistClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
             openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
             string play; string[] separatingStrings = {"\n" };
             string[] words;
@@ -373,6 +390,97 @@ namespace MultimediaPlayer
         private void sliProgress_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             lblProgressStatus.Text = TimeSpan.FromSeconds(sliProgress.Value).ToString(@"mm\:ss");
+        }
+
+        private void KeyUp_hook(object sender, System.Windows.Forms.KeyEventArgs e)
+        {
+            //hook key up for play song
+            if (e.Control && e.Shift && (e.KeyCode == Keys.Q))
+            {
+                if (_fullPaths.Count <= 0)
+                {
+                    return;
+                }
+                if (_isPlaying == true)
+                {
+                    mediaPlayer.Play();
+                    TotalSongNumber.Text = _fullPaths.Count.ToString();
+                    btnPause.Visibility = Visibility.Visible;
+                    btnPlay.Visibility = Visibility.Hidden;
+                    return;
+                }
+                if (PlayList.SelectedIndex >= 0)
+                {
+                    TotalSongNumber.Text = _fullPaths.Count.ToString();
+                    btnStopAll.Visibility = Visibility.Visible;
+                    _lastIndex = PlayList.SelectedIndex;
+                    PlaySelectedIndex(_lastIndex);
+                    btnPause.Visibility = Visibility.Visible;
+                    btnPlay.Visibility = Visibility.Hidden;
+                    NowPlayingInfo.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    TotalSongNumber.Text = _fullPaths.Count.ToString();
+                    btnStopAll.Visibility = Visibility.Visible;
+                    _lastIndex = 0;
+                    PlaySelectedIndex(_lastIndex);
+                    btnPause.Visibility = Visibility.Visible;
+                    btnPlay.Visibility = Visibility.Hidden;
+                    NowPlayingInfo.Visibility = Visibility.Visible;
+
+                    //System.Windows.MessageBox.Show("No file selected!");
+                    //return;
+                }
+            }
+        
+            //hook key up for pause song
+            if(e.Control && e.Shift && (e.KeyCode == Keys.W))
+            {
+                if (btnPlay.Visibility == Visibility.Hidden)
+                {
+                    mediaPlayer.Pause();
+                    btnPlay.Visibility = Visibility.Visible;
+                    btnPause.Visibility = Visibility.Hidden;
+                }
+            }
+
+            //hook key up for previous song
+            if (e.Control && e.Shift && (e.KeyCode == Keys.E))
+            {
+                if (_lastIndex == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    _lastIndex--;
+                    PlaySelectedIndex(_lastIndex);
+                }
+            }
+
+            //hook key up for next song
+            if (e.Control && e.Shift && (e.KeyCode == Keys.R))
+            {
+                if (_lastIndex + 1 >= _fullPaths.Count)
+                {
+                    return;
+                }
+                else
+                {
+                    _timer.Stop();
+                    _lastIndex++;
+                    PlaySelectedIndex(_lastIndex);
+                }
+            }
+
+
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            _hook.KeyUp -= KeyUp_hook;
+            _hook.Dispose();
         }
     }
 }
