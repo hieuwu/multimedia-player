@@ -127,6 +127,7 @@ namespace MultimediaPlayer
             var shortname = converter.Convert(shortFileName, null, null, null);
             SongNamePlaying.Text = shortname.ToString();
             mediaPlayer.Open(new Uri(filename));
+            PlayList.SelectedIndex = _lastIndex;
             mediaPlayer.Play();
             _isPlaying = true;
            
@@ -368,12 +369,46 @@ namespace MultimediaPlayer
 
         private void BtnSaveStateClick(object sender, RoutedEventArgs e)
         {
-           
+            var save = new Microsoft.Win32.SaveFileDialog();
+            save.FileName = "MyNowPlaying.txt";
+            save.DefaultExt = "txt";
+            save.FilterIndex = 2;
+            save.Filter = "Text File | *.txt";
+
+            if (save.ShowDialog() == true)
+            {
+                StreamWriter writer = new StreamWriter(save.OpenFile());
+                writer.WriteLine(_lastIndex);
+                for (int i = 0; i < _fullPaths.Count; i++)
+                {
+                    writer.WriteLine(_fullPaths[i].FullName);
+                }
+                writer.Dispose();
+                writer.Close();
+            }
         }
 
         private void BtnLoadStateClick(object sender, RoutedEventArgs e)
         {
+            var openFileDialog = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            string play; string[] separatingStrings = { "\n" };
+            string[] words;
 
+            if (openFileDialog.ShowDialog() == true)
+            {
+                play = File.ReadAllText(openFileDialog.FileName);
+                words = play.Split(separatingStrings,
+                                    System.StringSplitOptions.RemoveEmptyEntries);
+                FileInfo fileInfo;
+                _lastIndex = int.Parse(words[0].Replace("\r", ""));
+                for (int i = 1; i < words.Length; i++)
+                {
+                    fileInfo = new FileInfo(words[i].Replace("\r", ""));
+                    _fullPaths.Add(fileInfo);
+                }
+                PlayList.SelectedIndex = _lastIndex;
+            }
         }
 
         private void sliProgress_DragStarted(object sender, System.Windows.Controls.Primitives.DragStartedEventArgs e)

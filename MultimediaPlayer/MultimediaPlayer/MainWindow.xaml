@@ -79,7 +79,7 @@
 
                 </StackPanel>
                 <ListView BorderThickness="0" Name="PlayList" ScrollViewer.HorizontalScrollBarVisibility="Hidden" Width="250" Height="275"
-                      Background="Transparent" Margin="100,7,70,7" SelectionMode="Multiple"
+                      Background="Transparent" Margin="100,7,70,7" 
                       >
                     <ListView.ContextMenu>
                         <ContextMenu>
