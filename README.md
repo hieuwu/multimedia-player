@@ -1,5 +1,5 @@
 # Overview:
-A desktop application built with WPF allows you to play song or video. I made this project in Windows Programming course. You guys can use this as a reference source. Do not copy for other purposes.
+A desktop application built with WPF allows you to play song or video. I made this project in Windows Programming course. You guys can use this as a reference source. Do not copy for other purposes.\n
 Youtube: https://youtu.be/DoWoPY497F4
 # Contributors:
 <ul>
