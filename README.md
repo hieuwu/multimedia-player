@@ -7,6 +7,12 @@ A desktop application built with WPF allows you to play song or video. I made th
   <li>1712444 Vũ Hoàng Hiếu</li>
 </ul>
 
+# Note for keyboard:
+CTRL + SHIFT + Q : Play song
+CTRL + SHIFT + W : Pause current song
+CTRL + SHIFT + E : Previous song
+CTRL + SHIFT + R : Next song song
+
 # Features:
 <ul>
   <li>Add MP3/MP4 to Play</li>
