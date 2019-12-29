@@ -73,7 +73,6 @@ namespace MultimediaPlayer
             if (mediaPlayer.NaturalDuration.HasTimeSpan)
             {
                 var duration = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
-                // totalTime.Text = mediaPlayer.NaturalDuration.TimeSpan.ToString(@"mm\:ss");
                 totalTime.Text = duration;
             }
             else
@@ -113,9 +112,6 @@ namespace MultimediaPlayer
                 btnPause.Visibility = Visibility.Visible;
                 btnPlay.Visibility = Visibility.Hidden;
                 NowPlayingInfo.Visibility = Visibility.Visible;
-
-                //System.Windows.MessageBox.Show("No file selected!");
-                //return;
             }
         }
 
@@ -137,9 +133,6 @@ namespace MultimediaPlayer
         List<int> playedSong = new List<int>();
         private void _player_MediaEnded(object sender, EventArgs e)
         {
-
-            //_lastIndex++;
-            //PlaySelectedIndex(_lastIndex);
             if (loopMode == 2)
             {
                 PlaySelectedIndex(_lastIndex);
