@@ -234,7 +234,6 @@ namespace MultimediaPlayer
         private void BtnShuffleEnableClick(object sender, RoutedEventArgs e)
         {
             shuffleMode = 0;
-            System.Windows.MessageBox.Show(shuffleMode+"");
             btnShuffleEnable.Visibility = Visibility.Hidden;
             btnShuffleDisable.Visibility = Visibility.Visible;
         }
@@ -243,7 +242,6 @@ namespace MultimediaPlayer
         private void BtnShuffleDisableClick(object sender, RoutedEventArgs e)
         {
             shuffleMode = 1;
-            System.Windows.MessageBox.Show(shuffleMode + "");
             btnShuffleDisable.Visibility = Visibility.Hidden;
             btnShuffleEnable.Visibility = Visibility.Visible;
         }
@@ -252,7 +250,6 @@ namespace MultimediaPlayer
         private void BtnLoopAllClick(object sender, RoutedEventArgs e)
         {
             loopMode = 2;
-            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopAll.Visibility = Visibility.Hidden;
             btnLoopOne.Visibility = Visibility.Visible;
         }
@@ -261,7 +258,6 @@ namespace MultimediaPlayer
         private void BtnLoopDisableClick(object sender, RoutedEventArgs e)
         {
             loopMode = 1;
-            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopDisable.Visibility = Visibility.Hidden;
             btnLoopAll.Visibility = Visibility.Visible;
         }
@@ -270,7 +266,6 @@ namespace MultimediaPlayer
         private void BtnLoopOneClick(object sender, RoutedEventArgs e)
         {
             loopMode = 0;
-            System.Windows.MessageBox.Show(loopMode + "");
             btnLoopOne.Visibility = Visibility.Hidden;
             btnLoopDisable.Visibility = Visibility.Visible;
         }
@@ -348,6 +343,7 @@ namespace MultimediaPlayer
 
             if (openFileDialog.ShowDialog() == true)
             {
+                _fullPaths.Clear();
                 play = File.ReadAllText(openFileDialog.FileName);
                 words = play.Split(separatingStrings,
                                     System.StringSplitOptions.RemoveEmptyEntries);
@@ -390,6 +386,7 @@ namespace MultimediaPlayer
 
             if (openFileDialog.ShowDialog() == true)
             {
+                _fullPaths.Clear();
                 play = File.ReadAllText(openFileDialog.FileName);
                 words = play.Split(separatingStrings,
                                     System.StringSplitOptions.RemoveEmptyEntries);
