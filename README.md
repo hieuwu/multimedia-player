@@ -9,10 +9,10 @@ Youtube: https://youtu.be/DoWoPY497F4
 </ul>
 
 # Note for keyboard:
-CTRL + SHIFT + Q : Play song
-CTRL + SHIFT + W : Pause current song
-CTRL + SHIFT + E : Previous song
-CTRL + SHIFT + R : Next song song
+CTRL + SHIFT + Q : Play song<br>
+CTRL + SHIFT + W : Pause current song<br>
+CTRL + SHIFT + E : Previous song<br>
+CTRL + SHIFT + R : Next song song<br>
 
 # Features:
 <ul>
